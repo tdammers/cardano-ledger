@@ -44,7 +44,7 @@ import Test.Cardano.Ledger.Shelley.Constants (
  )
 import qualified Test.Cardano.Ledger.Shelley.Generator.Block as GenBlock
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv (..), ScriptSpace (..))
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, MinLEDGER_STS)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, MinLEDGER_STS, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.Presets (genEnv)
 import Test.Cardano.Ledger.Shelley.Generator.Trace.Chain (mkGenesisChainState)
 import Test.Cardano.Ledger.Shelley.Generator.Trace.TxCert (CERTS)
@@ -60,6 +60,7 @@ import Test.QuickCheck (generate)
 genChainState ::
   ( EraGen era
   , EraGov era
+  , PureEraGen era
   ) =>
   Int ->
   GenEnv era ->
@@ -84,6 +85,7 @@ genChainState n ge =
 genBlock ::
   ( Mock (EraCrypto era)
   , EraGen era
+  , PureEraGen era
   , MinLEDGER_STS era
   , GetLedgerView era
   , EraRule "LEDGERS" era ~ ShelleyLEDGERS era
@@ -106,6 +108,7 @@ genBlock ge cs = generate $ GenBlock.genBlock ge cs
 genTriple ::
   ( EraGen era
   , EraUTxO era
+  , PureEraGen era
   , Mock (EraCrypto era)
   , Embed (EraRule "DELPL" era) (CERTS era)
   , Environment (EraRule "DELPL" era) ~ DelplEnv era

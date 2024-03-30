@@ -61,6 +61,7 @@ import Test.Cardano.Ledger.Shelley.Generator.EraGen (
   MinCHAIN_STS,
   MinLEDGER_STS,
   genUtxo0,
+  PureEraGen,
  )
 import Test.Cardano.Ledger.Shelley.Generator.Presets (genesisDelegs0)
 import Test.Cardano.Ledger.Shelley.Rules.Chain (
@@ -105,6 +106,7 @@ instance
   , State (EraRule "TICK" era) ~ NewEpochState era
   , Signal (EraRule "TICK" era) ~ SlotNo
   , QC.HasTrace (EraRule "LEDGERS" era) (GenEnv era)
+  , PureEraGen era
   ) =>
   HasTrace (CHAIN era) (GenEnv era)
   where
@@ -132,6 +134,7 @@ mkGenesisChainState ::
   forall era a.
   ( EraGen era
   , EraGov era
+  , PureEraGen era
   ) =>
   GenEnv era ->
   IRC (CHAIN era) ->

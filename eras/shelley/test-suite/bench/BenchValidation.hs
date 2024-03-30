@@ -59,7 +59,7 @@ import Data.Proxy
 import Test.Cardano.Ledger.Shelley.ConcreteCryptoTypes (Mock)
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, MinLEDGER_STS)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, MinLEDGER_STS, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.Presets (genEnv)
 import Test.Cardano.Ledger.Shelley.Rules.Chain (ChainState (..))
 import Test.Cardano.Ledger.Shelley.Serialisation.Generators ()
@@ -76,6 +76,7 @@ instance NFData (ValidateInput era) where
 
 validateInput ::
   ( EraGen era
+  , PureEraGen era
   , Mock (EraCrypto era)
   , EraRule "LEDGERS" era ~ API.ShelleyLEDGERS era
   , QC.HasTrace (API.ShelleyLEDGERS era) (GenEnv era)
@@ -89,6 +90,7 @@ validateInput utxoSize = genValidateInput utxoSize
 
 genValidateInput ::
   ( EraGen era
+  , PureEraGen era
   , Mock (EraCrypto era)
   , EraRule "LEDGERS" era ~ API.ShelleyLEDGERS era
   , QC.HasTrace (API.ShelleyLEDGERS era) (GenEnv era)
@@ -168,6 +170,7 @@ instance Crypto c => NFData (UpdateInputs c) where
 genUpdateInputs ::
   forall era.
   ( EraGen era
+  , PureEraGen era
   , Mock (EraCrypto era)
   , MinLEDGER_STS era
   , GetLedgerView era

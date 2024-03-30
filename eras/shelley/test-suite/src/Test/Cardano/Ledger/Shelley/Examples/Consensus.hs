@@ -16,6 +16,7 @@ import Cardano.Crypto.DSIGN as DSIGN
 import Cardano.Crypto.Hash as Hash
 import Cardano.Crypto.Seed as Seed
 import Cardano.Crypto.VRF as VRF
+import Cardano.Crypto.KES as KES
 import Cardano.Ledger.AuxiliaryData
 import Cardano.Ledger.BaseTypes
 import Cardano.Ledger.Coin
@@ -56,6 +57,7 @@ import Lens.Micro ((&), (.~))
 import Test.Cardano.Ledger.Binary.Random (mkDummyHash)
 import Test.Cardano.Ledger.Core.KeyPair (KeyPair (..), mkWitnessesVKey)
 import Test.Cardano.Ledger.Shelley.Generator.Core
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (PureEraGen)
 import Test.Cardano.Ledger.Shelley.Utils hiding (mkVRFKeyPair)
 
 type KeyPairWits era = [KeyPair 'Witness (EraCrypto era)]
@@ -121,6 +123,7 @@ defaultShelleyLedgerExamples ::
   , PredicateFailure (EraRule "LEDGER" era) ~ ShelleyLedgerPredFailure era
   , Default (StashedAVVMAddresses era)
   , ProtVerAtMost era 4
+  , PureEraGen era
   ) =>
   (TxBody era -> KeyPairWits era -> TxWits era) ->
   (ShelleyTx era -> Tx era) ->
@@ -170,7 +173,7 @@ defaultShelleyLedgerExamples mkWitnesses mkAlonzoTx value txBody auxData transla
 
 exampleShelleyLedgerBlock ::
   forall era.
-  (EraSegWits era, PraosCrypto (EraCrypto era)) =>
+  (EraSegWits era, PraosCrypto (EraCrypto era), PureEraGen era) =>
   Tx era ->
   Block (BHeader (EraCrypto era)) era
 exampleShelleyLedgerBlock tx = Block blockHeader blockBody
@@ -182,7 +185,7 @@ exampleShelleyLedgerBlock tx = Block blockHeader blockBody
     KeyPair vKeyCold _ = aikCold keys
 
     blockHeader :: BHeader (EraCrypto era)
-    blockHeader = BHeader blockHeaderBody (signedKES () 0 blockHeaderBody hotKey)
+    blockHeader = BHeader blockHeaderBody (unsoundPureSignedKES () 0 blockHeaderBody hotKey)
 
     blockHeaderBody :: BHBody (EraCrypto era)
     blockHeaderBody =
@@ -222,7 +225,7 @@ mkScriptHash = ScriptHash . mkDummyHash @(ADDRHASH c)
 -- serialisation, not validation.
 exampleTx ::
   forall era.
-  EraTx era =>
+  (EraTx era, PureEraGen era) =>
   (TxBody era -> KeyPairWits era -> TxWits era) ->
   TxBody era ->
   TxAuxData era ->
@@ -246,7 +249,7 @@ exampleProposedPParamsUpdates =
       (mkKeyHash 0)
       (emptyPParamsUpdate & ppuKeyDepositL .~ SJust (Coin 100))
 
-examplePoolDistr :: forall c. PraosCrypto c => PoolDistr c
+examplePoolDistr :: forall c. (PraosCrypto c, UnsoundPureKESAlgorithm (KES c)) => PoolDistr c
 examplePoolDistr =
   PoolDistr $
     Map.fromList
@@ -302,6 +305,7 @@ exampleNewEpochState ::
   , EraGov era
   , ShelleyBasedEra' era
   , Default (StashedAVVMAddresses era)
+  , PureEraGen era
   ) =>
   Value era ->
   PParams era ->
@@ -471,7 +475,11 @@ exampleTxIns =
     [ TxIn (TxId (mkDummySafeHash Proxy 1)) minBound
     ]
 
-exampleCerts :: (ShelleyEraTxCert era, ProtVerAtMost era 8) => StrictSeq (TxCert era)
+exampleCerts :: ( ShelleyEraTxCert era
+                , ProtVerAtMost era 8
+                , PureEraGen era
+                ) =>
+              StrictSeq (TxCert era)
 exampleCerts =
   StrictSeq.fromList
     [ RegTxCert (keyToCredential exampleStakeKey)
@@ -484,7 +492,7 @@ exampleCerts =
               ]
     ]
 
-exampleWithdrawals :: Crypto c => Withdrawals c
+exampleWithdrawals :: (Crypto c, UnsoundPureKESAlgorithm (KES c)) => Withdrawals c
 exampleWithdrawals =
   Withdrawals $
     Map.fromList
@@ -506,7 +514,7 @@ examplePayKey = mkDSIGNKeyPair 0
 exampleStakeKey :: Crypto c => KeyPair 'Staking c
 exampleStakeKey = mkDSIGNKeyPair 1
 
-exampleKeys :: forall c r. Crypto c => AllIssuerKeys c r
+exampleKeys :: forall c r. (Crypto c, UnsoundPureKESAlgorithm (KES c)) => AllIssuerKeys c r
 exampleKeys =
   AllIssuerKeys
     coldKey
@@ -553,7 +561,7 @@ mkVRFKeyPair _ byte = VRFKeyPair sk (VRF.deriveVerKeyVRF sk)
 
     sk = VRF.genKeyVRF seed
 
-examplePoolParams :: forall c. Crypto c => PoolParams c
+examplePoolParams :: forall c. (Crypto c, UnsoundPureKESAlgorithm (KES c)) => PoolParams c
 examplePoolParams =
   PoolParams
     { ppId = hashKey $ vKey $ aikCold poolKeys

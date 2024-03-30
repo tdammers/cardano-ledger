@@ -60,7 +60,7 @@ import Test.Cardano.Ledger.Shelley.Generator.Core (
   mkBlock,
   mkOCert,
  )
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), MinLEDGER_STS)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), MinLEDGER_STS, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.Trace.Ledger ()
 import Test.Cardano.Ledger.Shelley.Rules.Chain (ChainState (..))
 import Test.Cardano.Ledger.Shelley.Utils (
@@ -95,6 +95,7 @@ genBlock ::
   , GetLedgerView era
   , QC.HasTrace (EraRule "LEDGERS" era) (GenEnv era)
   , EraGen era
+  , PureEraGen era
   ) =>
   GenEnv era ->
   ChainState era ->
@@ -113,6 +114,7 @@ genBlockWithTxGen ::
   , GetLedgerView era
   , ApplyBlock era
   , EraGen era
+  , PureEraGen era
   ) =>
   TxGen era ->
   GenEnv era ->

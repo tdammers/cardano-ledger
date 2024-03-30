@@ -22,7 +22,7 @@ import Control.Monad.Trans.Reader (ReaderT)
 import Control.State.Transition
 import Data.Functor.Identity (Identity)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Rules.Chain (CHAIN)
 import qualified Test.Control.State.Transition.Trace.Generator.QuickCheck as QC
 
@@ -65,6 +65,7 @@ commonTests ::
   , State ledger ~ LedgerState era
   , Signal ledger ~ Tx era
   , GovState era ~ ShelleyGovState era
+  , PureEraGen era
   ) =>
   [TestTree]
 commonTests =

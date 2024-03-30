@@ -52,6 +52,7 @@ import Test.Cardano.Ledger.Shelley.Generator.EraGen (
   EraGen (..),
   MinLEDGER_STS,
   genUtxo0,
+  PureEraGen,
  )
 import Test.Cardano.Ledger.Shelley.Generator.Presets (genesisDelegs0)
 import Test.Cardano.Ledger.Shelley.Generator.Trace.TxCert (CERTS)
@@ -176,6 +177,7 @@ mkGenesisLedgerState ::
   forall a era ledger.
   ( EraGen era
   , EraGov era
+  , PureEraGen era
   ) =>
   GenEnv era ->
   IRC ledger ->

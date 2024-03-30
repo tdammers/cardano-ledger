@@ -60,7 +60,7 @@ import Lens.Micro
 import Lens.Micro.Extras (view)
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.Presets (genEnv)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Generator.Trace.Chain (mkGenesisChainState)
@@ -97,6 +97,7 @@ relevantCasesAreCovered ::
   ( EraGen era
   , ChainProperty era
   , QC.HasTrace (CHAIN era) (GenEnv era)
+  , PureEraGen era
   ) =>
   Int ->
   TestTree
@@ -299,6 +300,7 @@ onlyValidLedgerSignalsAreGenerated ::
   , Show (Environment ledger)
   , Show (Signal ledger)
   , EraGov era
+  , PureEraGen era
   ) =>
   TestTree
 onlyValidLedgerSignalsAreGenerated =
@@ -324,6 +326,7 @@ propAbstractSizeBoundsBytes ::
   ( EraGen era
   , QC.HasTrace (ShelleyLEDGER era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   Property
 propAbstractSizeBoundsBytes = property $ do
@@ -350,6 +353,7 @@ propAbstractSizeNotTooBig ::
   ( EraGen era
   , QC.HasTrace (ShelleyLEDGER era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   Property
 propAbstractSizeNotTooBig = property $ do
@@ -381,6 +385,7 @@ onlyValidChainSignalsAreGenerated ::
   ( EraGen era
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   TestTree
 onlyValidChainSignalsAreGenerated =

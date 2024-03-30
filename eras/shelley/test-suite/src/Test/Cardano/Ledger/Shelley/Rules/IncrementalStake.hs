@@ -56,7 +56,7 @@ import qualified Data.VMap as VMap
 import Lens.Micro hiding (ix)
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants, maxMajorPV)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..))
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Rules.Chain (CHAIN, ChainState (..))
 import Test.Cardano.Ledger.Shelley.Utils (
@@ -83,6 +83,7 @@ incrStakeComputationTest ::
   , TestingLedger era ledger
   , ChainProperty era
   , QC.HasTrace (CHAIN era) (GenEnv era)
+  , PureEraGen era
   ) =>
   TestTree
 incrStakeComputationTest =
@@ -147,6 +148,7 @@ incrStakeComparisonTest ::
   ( EraGen era
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   Proxy era ->
   TestTree

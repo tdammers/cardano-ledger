@@ -20,9 +20,10 @@ module Test.Cardano.Ledger.Shelley.Examples.Federation (
 )
 where
 
+import Cardano.Crypto.KES (UnsoundPureKESAlgorithm)
 import Cardano.Ledger.BaseTypes (Globals (..))
 import Cardano.Ledger.Core (EraCrypto, EraPParams (..), PParams (..))
-import Cardano.Ledger.Crypto (Crypto)
+import Cardano.Ledger.Crypto (Crypto (..))
 import Cardano.Ledger.Keys (
   GenDelegPair (..),
   KeyHash (..),
@@ -47,6 +48,7 @@ import Data.Word (Word64)
 import GHC.Stack (HasCallStack)
 import Lens.Micro ((^.))
 import Test.Cardano.Ledger.Core.KeyPair (KeyPair (..), vKey)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.Core (
   AllIssuerKeys (..),
   VRFKeyPair (..),
@@ -58,7 +60,7 @@ numCoreNodes :: Word64
 numCoreNodes = 7
 
 mkAllCoreNodeKeys ::
-  Crypto c =>
+  (Crypto c, UnsoundPureKESAlgorithm (KES c)) =>
   Word64 ->
   AllIssuerKeys c r
 mkAllCoreNodeKeys w =
@@ -72,7 +74,7 @@ mkAllCoreNodeKeys w =
 
 coreNodes ::
   forall c.
-  Crypto c =>
+  (Crypto c, UnsoundPureKESAlgorithm (KES c)) =>
   [ ( (SignKeyDSIGN c, VKey 'Genesis c)
     , AllIssuerKeys c 'GenesisDelegate
     )
@@ -85,13 +87,21 @@ coreNodes =
 -- === Signing (Secret) Keys
 -- Retrieve the signing key for a core node by providing
 -- a number in the range @[0, ... ('numCoreNodes'-1)]@.
-coreNodeSK :: forall c. Crypto c => Int -> SignKeyDSIGN c
+coreNodeSK ::
+  forall c.
+  (Crypto c, UnsoundPureKESAlgorithm (KES c)) =>
+  Int ->
+  SignKeyDSIGN c
 coreNodeSK = fst . fst . (coreNodes @c !!)
 
 -- | === Verification (Public) Keys
 -- Retrieve the verification key for a core node by providing
 -- a number in the range @[0, ... ('numCoreNodes'-1)]@.
-coreNodeVK :: forall c. Crypto c => Int -> VKey 'Genesis c
+coreNodeVK ::
+  forall c.
+  (Crypto c, UnsoundPureKESAlgorithm (KES c)) =>
+  Int ->
+  VKey 'Genesis c
 coreNodeVK = snd . fst . (coreNodes @c !!)
 
 -- | === Block Issuer Keys
@@ -100,7 +110,7 @@ coreNodeVK = snd . fst . (coreNodes @c !!)
 -- a number in the range @[0, ... ('numCoreNodes'-1)]@.
 coreNodeIssuerKeys ::
   forall c.
-  Crypto c =>
+  (Crypto c, UnsoundPureKESAlgorithm (KES c)) =>
   Int ->
   AllIssuerKeys c 'GenesisDelegate
 coreNodeIssuerKeys = snd . (coreNodes @c !!)
@@ -112,7 +122,7 @@ coreNodeIssuerKeys = snd . (coreNodes @c !!)
 -- for the given slot.
 coreNodeKeysBySchedule ::
   forall era.
-  (HasCallStack, EraPParams era) =>
+  (HasCallStack, EraPParams era, PureEraGen era) =>
   PParams era ->
   Word64 ->
   AllIssuerKeys (EraCrypto era) 'GenesisDelegate
@@ -141,7 +151,7 @@ coreNodeKeysBySchedule pp slot =
 -- to their delegate's (verification) key hash.
 genDelegs ::
   forall c.
-  Crypto c =>
+  (Crypto c, UnsoundPureKESAlgorithm (KES c)) =>
   Map (KeyHash 'Genesis c) (GenDelegPair c)
 genDelegs =
   Map.fromList

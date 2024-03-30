@@ -67,7 +67,7 @@ import Lens.Micro.Extras (view)
 import Test.Cardano.Ledger.Shelley.Constants (Constants)
 import Test.Cardano.Ledger.Shelley.Generator.Block (tickChainState)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..))
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), PureEraGen)
 import qualified Test.Cardano.Ledger.Shelley.Generator.Presets as Preset (genEnv)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Generator.Trace.Chain (mkGenesisChainState)
@@ -124,6 +124,7 @@ shortChainTrace ::
   ( EraGen era
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   Constants ->
   (SourceSignalTarget (CHAIN era) -> Property) ->
@@ -297,6 +298,7 @@ forAllChainTrace ::
   , EraGen era
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   Word64 -> -- trace length
   Constants ->
@@ -321,6 +323,7 @@ forEachEpochTrace ::
   , Testable prop
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , EraGov era
+  , PureEraGen era
   ) =>
   Int ->
   Word64 ->

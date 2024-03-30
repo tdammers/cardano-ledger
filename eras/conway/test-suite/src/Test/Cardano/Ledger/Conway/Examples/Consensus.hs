@@ -68,6 +68,7 @@ import Test.Cardano.Ledger.Core.KeyPair (mkAddr, mkWitnessesVKey)
 import Test.Cardano.Ledger.Core.Utils (mkDummySafeHash)
 import qualified Test.Cardano.Ledger.Mary.Examples.Consensus as MarySLE
 import Test.Cardano.Ledger.Shelley.Examples.Consensus (examplePoolParams)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (PureEraGen)
 import qualified Test.Cardano.Ledger.Shelley.Examples.Consensus as SLE
 
 -- ==============================================================
@@ -119,7 +120,7 @@ collateralOutput =
     NoDatum
     SNothing
 
-exampleConwayCerts :: Era era => OSet.OSet (ConwayTxCert era)
+exampleConwayCerts :: (Era era, PureEraGen era) => OSet.OSet (ConwayTxCert era)
 exampleConwayCerts =
   OSet.fromList -- TODO should I add the new certs here?
     [ ConwayTxCertPool (RegPool examplePoolParams)

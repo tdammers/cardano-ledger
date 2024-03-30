@@ -35,7 +35,7 @@ import Cardano.Ledger.Val ((<+>))
 import qualified Data.Map.Strict as Map
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..))
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Rules.Chain (CHAIN, ChainState (..))
 import Test.Control.State.Transition.Trace (
@@ -58,6 +58,7 @@ tests ::
   ( EraGen era
   , EraGov era
   , QC.HasTrace (CHAIN era) (GenEnv era)
+  , PureEraGen era
   ) =>
   TestTree
 tests =

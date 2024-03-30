@@ -40,6 +40,7 @@ import Test.Cardano.Ledger.Shelley.Generator.Core (
  )
 import Test.Cardano.Ledger.Shelley.Rules.Chain (ChainState (..))
 import Test.Cardano.Ledger.Shelley.Utils (getBlockNonce)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (PureEraGen)
 
 -- =============================================================
 
@@ -49,6 +50,7 @@ initStEx1 ::
   , ProtVerAtMost era 6
   , Default (StashedAVVMAddresses era)
   , EraGov era
+  , PureEraGen era
   ) =>
   ChainState era
 initStEx1 = initSt (UTxO mempty)

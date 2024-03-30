@@ -26,7 +26,7 @@ import GHC.Generics (Generic)
 import Test.Cardano.Ledger.AllegraEraGen ()
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv (..))
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.Presets (genEnv)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Generator.Trace.Ledger (mkGenesisLedgerState)
@@ -69,6 +69,7 @@ instance NFData (ApplyTxEnv era) where
 generateApplyTxEnvForEra ::
   forall era.
   ( EraGen era
+  , PureEraGen era
   , HasTrace (EraRule "LEDGER" era) (GenEnv era)
   , BaseEnv (EraRule "LEDGER" era) ~ Globals
   , Signal (EraRule "LEDGER" era) ~ Tx era

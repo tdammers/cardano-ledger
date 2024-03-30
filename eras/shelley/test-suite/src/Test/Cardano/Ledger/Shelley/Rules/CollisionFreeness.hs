@@ -29,7 +29,7 @@ import qualified Data.Set as Set
 import Lens.Micro hiding (ix)
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..))
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.ScriptClass (scriptKeyCombinations)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Rules.Chain (CHAIN)
@@ -64,6 +64,7 @@ tests ::
   , ChainProperty era
   , TestingLedger era ledger
   , QC.HasTrace (CHAIN era) (GenEnv era)
+  , PureEraGen era
   ) =>
   TestTree
 tests =

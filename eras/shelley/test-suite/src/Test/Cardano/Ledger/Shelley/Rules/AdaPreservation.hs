@@ -81,7 +81,7 @@ import Lens.Micro hiding (ix)
 import Lens.Micro.Extras (view)
 import Test.Cardano.Ledger.Shelley.Constants (defaultConstants)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..))
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.ShelleyEraGen ()
 import Test.Cardano.Ledger.Shelley.Rules.Chain (CHAIN, ChainState (..), totalAda, totalAdaPots)
 import Test.Cardano.Ledger.Shelley.Utils (
@@ -115,6 +115,7 @@ tests ::
   , ChainProperty era
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , GovState era ~ ShelleyGovState era
+  , PureEraGen era
   ) =>
   Int ->
   TestTree
@@ -131,6 +132,7 @@ adaPreservationProps ::
   , ChainProperty era
   , QC.HasTrace (CHAIN era) (GenEnv era)
   , GovState era ~ ShelleyGovState era
+  , PureEraGen era
   ) =>
   Property
 adaPreservationProps =

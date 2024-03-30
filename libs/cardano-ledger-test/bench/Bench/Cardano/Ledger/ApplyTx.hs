@@ -41,7 +41,7 @@ import Test.Cardano.Ledger.Alonzo.Trace ()
 import Test.Cardano.Ledger.MaryEraGen ()
 import Test.Cardano.Ledger.Shelley.ConcreteCryptoTypes (C_Crypto)
 import Test.Cardano.Ledger.Shelley.Generator.Core (GenEnv)
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen, PureEraGen)
 import Test.Control.State.Transition.Trace.Generator.QuickCheck (BaseEnv, HasTrace)
 
 type ShelleyBench = ShelleyEra C_Crypto
@@ -69,6 +69,7 @@ benchmarkSeed = 24601
 benchWithGenState ::
   ( NFData a
   , EraGen era
+  , PureEraGen era
   , HasTrace (EraRule "LEDGER" era) (GenEnv era)
   , BaseEnv (EraRule "LEDGER" era) ~ Globals
   , Signal (EraRule "LEDGER" era) ~ Tx era
@@ -86,6 +87,7 @@ benchWithGenState px prepEnv mkBench =
 benchApplyTx ::
   forall era.
   ( EraGen era
+  , PureEraGen era
   , ApplyTx era
   , HasTrace (EraRule "LEDGER" era) (GenEnv era)
   , BaseEnv (EraRule "LEDGER" era) ~ Globals
@@ -111,6 +113,7 @@ benchApplyTx px =
 deserialiseTxEra ::
   forall era.
   ( EraGen era
+  , PureEraGen era
   , BaseEnv (EraRule "LEDGER" era) ~ Globals
   , HasTrace (EraRule "LEDGER" era) (GenEnv era)
   , State (EraRule "LEDGER" era) ~ LedgerState era

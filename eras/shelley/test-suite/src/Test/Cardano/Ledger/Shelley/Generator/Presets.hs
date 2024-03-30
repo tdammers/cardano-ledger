@@ -20,8 +20,9 @@ module Test.Cardano.Ledger.Shelley.Generator.Presets (
 )
 where
 
+import Cardano.Crypto.KES (UnsoundPureKESAlgorithm)
 import Cardano.Ledger.Core (EraScript, hashScript)
-import Cardano.Ledger.Crypto (Crypto)
+import Cardano.Ledger.Crypto (Crypto (..))
 import Cardano.Ledger.Keys (
   GenDelegPair (..),
   KeyHash,
@@ -39,7 +40,7 @@ import Data.Word (Word64)
 import Test.Cardano.Ledger.Core.KeyPair (KeyPair (..))
 import Test.Cardano.Ledger.Shelley.Constants (Constants (..))
 import Test.Cardano.Ledger.Shelley.Generator.Core
-import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), allScripts, someKeyPairs)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (EraGen (..), allScripts, someKeyPairs, PureEraGen)
 import Test.Cardano.Ledger.Shelley.Generator.ScriptClass (keyPairs)
 import Test.Cardano.Ledger.Shelley.Utils (
   maxKESIterations,
@@ -54,7 +55,9 @@ import Test.Cardano.Ledger.Shelley.Utils (
 -- corresponding keyspace.
 genEnv ::
   forall era.
-  EraGen era =>
+  ( EraGen era
+  , PureEraGen era
+  ) =>
   Proxy era ->
   Constants ->
   GenEnv era
@@ -81,7 +84,9 @@ scriptSpace scripts3 scripts2 =
 -- | Example keyspace for use in generators
 keySpace ::
   forall era.
-  EraGen era =>
+  ( EraGen era
+  , PureEraGen era
+  ) =>
   Constants ->
   KeySpace era
 keySpace c =
@@ -97,7 +102,9 @@ keySpace c =
 -- NOTE: we use a seed range in the [1000...] range
 -- to create keys that don't overlap with any of the other generated keys
 coreNodeKeys ::
-  Crypto c =>
+  ( UnsoundPureKESAlgorithm (KES c)
+  , Crypto c
+  ) =>
   Constants ->
   [(KeyPair 'Genesis c, AllIssuerKeys c 'GenesisDelegate)]
 coreNodeKeys c@Constants {numCoreNodes} =
@@ -110,14 +117,24 @@ coreNodeKeys c@Constants {numCoreNodes} =
     toKeyPair (sk, vk) = KeyPair vk sk
 
 -- Pre-generate a set of keys to use for genesis delegates.
-genesisDelegates :: Crypto c => Constants -> [AllIssuerKeys c 'GenesisDelegate]
+genesisDelegates ::
+  ( Crypto c
+  , UnsoundPureKESAlgorithm (KES c)
+  )
+  => Constants
+  -> [AllIssuerKeys c 'GenesisDelegate]
 genesisDelegates c =
   [ issuerKeys c 20 x
   | x <- [0 .. 50]
   ]
 
 -- Pre-generate a set of keys to use for stake pools.
-stakePoolKeys :: Crypto c => Constants -> [AllIssuerKeys c 'StakePool]
+stakePoolKeys ::
+  ( Crypto c
+  , UnsoundPureKESAlgorithm (KES c)
+  )
+  => Constants
+  -> [AllIssuerKeys c 'StakePool]
 stakePoolKeys c =
   [ issuerKeys c 10 x
   | x <- [0 .. 50]
@@ -125,7 +142,9 @@ stakePoolKeys c =
 
 -- | Generate all keys for any entity which will be issuing blocks.
 issuerKeys ::
-  Crypto c =>
+  ( UnsoundPureKESAlgorithm (KES c)
+  , Crypto c
+  ) =>
   Constants ->
   -- | Namespace parameter. Can be used to differentiate between different
   --   "types" of issuer.
@@ -157,7 +176,9 @@ issuerKeys Constants {maxSlotTrace} ns x =
         }
 
 genesisDelegs0 ::
-  Crypto c =>
+  ( Crypto c
+  , UnsoundPureKESAlgorithm (KES c)
+  ) =>
   Constants ->
   Map (KeyHash 'Genesis c) (GenDelegPair c)
 genesisDelegs0 c =

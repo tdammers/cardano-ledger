@@ -105,10 +105,10 @@ test-show-details: streaming
 source-repository-package
   type: git
   location: https://github.com/input-output-hk/cardano-base
-  tag: fc1d6be3ecfc0ee500c5a15b0af1122307459dac
+  tag: 67a683bd8d1bedad63d4637cfe00ce12b56a7a66
   --sha256: 0944wg2nqazmhlmsynwgdwxxj6ay0hb9qig9l128isb2cjia0hlp
   subdir:
-    cardano-binary
+    -- cardano-binary
     cardano-crypto-class
     cardano-crypto-tests
     cardano-crypto-praos

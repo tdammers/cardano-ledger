@@ -21,6 +21,7 @@ import Lens.Micro
 import Test.Cardano.Ledger.Core.KeyPair (mkAddr)
 import Test.Cardano.Ledger.Core.Utils (mkDummySafeHash)
 import Test.Cardano.Ledger.Shelley.Examples.Consensus
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (PureEraGen)
 
 -- | ShelleyLedgerExamples for Allegra era
 ledgerExamplesAllegra :: ShelleyLedgerExamples Allegra
@@ -37,6 +38,7 @@ exampleAllegraTxBody ::
   forall era.
   ( AllegraEraTxBody era
   , ShelleyEraTxBody era
+  , PureEraGen era
   ) =>
   Value era ->
   TxBody era

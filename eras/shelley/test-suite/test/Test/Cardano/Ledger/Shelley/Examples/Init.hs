@@ -45,6 +45,7 @@ import Test.Cardano.Ledger.Shelley.Rules.Chain (
   initialShelleyState,
  )
 import Test.Cardano.Ledger.Shelley.Utils (maxLLSupply, mkHash, unsafeBoundRational)
+import Test.Cardano.Ledger.Shelley.Generator.EraGen (PureEraGen)
 
 -- | Initial Protocol Parameters
 ppEx :: (EraPParams era, ProtVerAtMost era 4, ProtVerAtMost era 6) => PParams era
@@ -95,6 +96,7 @@ initSt ::
   , ProtVerAtMost era 6
   , Default (StashedAVVMAddresses era)
   , EraGov era
+  , PureEraGen era
   ) =>
   UTxO era ->
   ChainState era

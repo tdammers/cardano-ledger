@@ -19,6 +19,7 @@ module Test.Cardano.Ledger.Shelley.Generator.EraGen (
   genUtxo0,
   genesisId,
   EraGen (..),
+  PureEraGen,
   MinLEDGER_STS,
   MinCHAIN_STS,
   MinUTXO_STS,
@@ -32,12 +33,13 @@ module Test.Cardano.Ledger.Shelley.Generator.EraGen (
 where
 
 import qualified Cardano.Crypto.Hash as Hash
+import qualified Cardano.Crypto.KES as KES
 import Cardano.Ledger.AuxiliaryData (AuxiliaryDataHash)
 import Cardano.Ledger.BaseTypes (Network (..), ShelleyBase, StrictMaybe)
 import qualified Cardano.Ledger.Binary.Plain as Plain
 import Cardano.Ledger.Coin (Coin (..))
 import Cardano.Ledger.Core
-import qualified Cardano.Ledger.Crypto as CC (Crypto, HASH)
+import qualified Cardano.Ledger.Crypto as CC (Crypto (..), HASH)
 import Cardano.Ledger.Keys (KeyRole (Witness), WitVKey)
 import Cardano.Ledger.SafeHash (unsafeMakeSafeHash)
 import Cardano.Ledger.Shelley.API (
@@ -265,6 +267,8 @@ class
 
   feeOrCollateral :: Tx era -> UTxO era -> Coin
   feeOrCollateral tx _ = tx ^. bodyTxL . feeTxBodyL
+
+type PureEraGen era = KES.UnsoundPureKESAlgorithm (CC.KES (EraCrypto era))
 
 {------------------------------------------------------------------------------
   Generators shared across eras
